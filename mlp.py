@@ -159,6 +159,8 @@ class Graph():
 
 	def __init__(self,num_input,layer_sizes,optimizer,activations):
 
+		print("Allocating memory for nodes in graph...")
+
 		self.optimizer = optimizer
 		self.activations = activations
 		self.num_input = num_input
@@ -168,6 +170,7 @@ class Graph():
 		for x in range(1,len(layer_sizes)):
 			self.graph.append([Perceptron(layer_sizes[x-1],optimizer,activations[x]) for _ in range(layer_sizes[x])])
 
+		print("Graph initialized.")
 	def feedforward(self,inputs):
 
 		input_holder = inputs
@@ -212,7 +215,8 @@ class Graph():
 		with open(file, 'w') as f:
 			f.write(str(self.num_input))
 			f.write("\n")
-			f.write(str(self.layer_sizes))
+			for x in self.layer_sizes:
+				f.write(str(x))
 			f.write("\n")
 			f.write(str(self.activations))
 			f.write("\n")
@@ -227,6 +231,10 @@ class Graph():
 					f.write("\n")
 
 
+	# def loadfrom(file):
+	# 	with open(file, 'r') as f:
+
+
 	def error(self,inputs,outputs):
 
 		final_pred,l = self.feedforward(inputs)
@@ -237,10 +245,10 @@ if __name__ == "__main__":
 	start = timeit.default_timer()
 
 	#  num_inputs , layer_sizes
-	activations=["sigmoid","sigmoid","sigmoid","none","none","none"]
-	g = Graph(15,[30,30,30,15,1],"Adam",activations)
+	activations=["none","sigmoid"]
+	g = Graph(15,[ 1,      1     ],"Adam",activations)
 
-	epochs = 1
+	epochs = 10
 
 	# x = X[0][0]
 	# y = X[0][1]
@@ -251,10 +259,12 @@ if __name__ == "__main__":
 		i=0
 		for row in X:
 			print(int((i/total)*100),"%", end="\r", flush=True)
+			# print(i,"%", end="\r", flush=True)
 			f,l = g.feedforward(row[1:-1])
 			g.backprop(l,row[-1])
 			i+=1
 			# if i==20000:break
+		print("Epoch no.",e+1,"done")
 
 	stop = timeit.default_timer() - start
 	suff = " secs"
@@ -283,4 +293,3 @@ if __name__ == "__main__":
 	# for [x,y,o] in X:
 	# 	err += g.error([x,y],o)
 	# print(err)
-
