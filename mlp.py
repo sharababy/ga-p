@@ -8,9 +8,9 @@ X = []
 
 
 # with open('foo.csv') as csvfile:
-with open('train-num.csv') as csvfile:
+with open('train-01.csv') as csvfile:
 	readCSV = csv.reader(csvfile, delimiter=',')
-	next(readCSV)  # Skip header line
+	# next(readCSV)  # Skip header line
 	for row in readCSV:
 		a = list(map(float, row))
 		X.append(a)
@@ -50,7 +50,7 @@ class Perceptron():
 		self.batch_grad_w = np.zeros(self.num_inputs)
 		self.batch_grad_b = 0.0
 		self.batch_count = 0
-		self.batch_size = 50
+		self.batch_size = 100
 
 		
 
@@ -245,10 +245,10 @@ if __name__ == "__main__":
 	start = timeit.default_timer()
 
 	#  num_inputs , layer_sizes
-	activations=["none","sigmoid"]
-	g = Graph(15,[ 1,      1     ],"Adam",activations)
+	activations=["none","none","sigmoid","sigmoid"]
+	g = Graph(15,[ 3,      2,      2,        1    ],"Adam",activations)
 
-	epochs = 10
+	epochs = 5
 
 	# x = X[0][0]
 	# y = X[0][1]
@@ -280,16 +280,16 @@ if __name__ == "__main__":
 
 	g.dump_params("graphdump.txt")
 
-	i=0
+	# i=0
+	# for row in X:
+	# 	f,l = g.feedforward(row[1:-1])
+	# 	print(f,row[-1])
+	# 	i+=1
+	# 	if i==10:exit()
+
+
+	print("Total Error:")
+	err = 0
 	for row in X:
-		f,l = g.feedforward(row[1:-1])
-		print(f,row[-1])
-		i+=1
-		if i==10:exit()
-
-
-	# print("Total Error:")
-	# err = 0
-	# for [x,y,o] in X:
-	# 	err += g.error([x,y],o)
-	# print(err)
+		err += g.error(row[1:-1],row[-1])
+	print(err)
